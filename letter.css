@@ -1,0 +1,489 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+  background: #02030a;
+  color: #e8ecff;
+}
+
+/* -------- НЕБО НА ФОНЕ -------- */
+
+.sky {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* базовое небо — оттенок меняется классами body */
+.sky::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, #02030a 0%, #02030a 100%);
+  transition: background 1.5s ease;
+}
+
+/* солнце и луна */
+.sun,
+.moon {
+  position: absolute;
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  top: 12%;
+  left: 18%;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  transition: opacity 1.2s ease, transform 1.2s ease;
+}
+
+/* солнце */
+.sun {
+  background: radial-gradient(circle at 30% 30%, #fff9c5 0%, #ffd56a 45%, #f7a83b 70%, transparent 80%);
+  box-shadow:
+    0 0 40px rgba(255, 223, 138, 0.9),
+    0 0 100px rgba(255, 190, 92, 0.7);
+}
+
+/* луна */
+.moon {
+  background: radial-gradient(circle at 30% 30%, #ffffff 0%, #d7e5ff 40%, #9ab0ff 65%, transparent 80%);
+  box-shadow:
+    0 0 40px rgba(173, 199, 255, 0.9),
+    0 0 80px rgba(135, 170, 255, 0.7);
+}
+
+/* звёзды */
+.stars {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 1.5s ease;
+  background-image:
+    radial-gradient(white, rgba(255, 255, 255, 0.2) 1px, transparent 3px),
+    radial-gradient(white, rgba(255, 255, 255, 0.17) 1px, transparent 3px),
+    radial-gradient(white, rgba(255, 255, 255, 0.12) 1px, transparent 3px);
+  background-size: 180px 180px, 260px 260px, 340px 340px;
+  background-position: 0 0, 60px 80px, 120px 220px;
+  animation: starsDrift 80s linear infinite;
+}
+
+@keyframes starsDrift {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  100% {
+    transform: translate3d(-90px, -60px, 0);
+  }
+}
+
+/* ---- СОСТОЯНИЯ НЕБА ---- */
+
+body.morning .sky::before {
+  background: linear-gradient(180deg, #2c3e7c 0%, #f2c38a 40%, #f7e3c5 65%, #7fa4d1 100%);
+}
+body.morning .sun {
+  opacity: 1;
+  transform: translate(-50%, -40%);
+}
+body.morning .moon {
+  opacity: 0;
+}
+body.morning .stars {
+  opacity: 0.1;
+}
+
+body.day .sky::before {
+  background: linear-gradient(180deg, #5fa8ff 0%, #b8ddff 50%, #eef6ff 100%);
+}
+body.day .sun {
+  opacity: 1;
+  top: 18%;
+  left: 18%;
+  transform: translate(-50%, -50%);
+}
+body.day .moon {
+  opacity: 0;
+}
+body.day .stars {
+  opacity: 0;
+}
+
+body.evening .sky::before {
+  background: linear-gradient(180deg, #1d2348 0%, #ff9155 35%, #f9d1a4 55%, #1e1230 100%);
+}
+body.evening .sun {
+  opacity: 1;
+  top: 35%;
+  left: 75%;
+  transform: translate(-50%, -50%);
+}
+body.evening .moon {
+  opacity: 0.2;
+  top: 18%;
+  left: 18%;
+}
+body.evening .stars {
+  opacity: 0.25;
+}
+
+body.night .sky::before {
+  background: radial-gradient(circle at top, #20254e 0%, #050714 45%, #000000 100%);
+}
+body.night .sun {
+  opacity: 0;
+}
+body.night .moon {
+  opacity: 1;
+  top: 24%;
+  left: 70%;
+  transform: translate(-50%, -50%);
+}
+body.night .stars {
+  opacity: 0.6;
+}
+
+/* -------- ПОВЕРХ НЕБА: ПОЧТА -------- */
+
+.app {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: radial-gradient(circle at top, rgba(5, 7, 19, 0.94), rgba(1, 2, 10, 0.96));
+}
+
+/* верхняя панель */
+.topbar {
+  height: 56px;
+  background: linear-gradient(90deg, rgba(5, 7, 19, 0.96), rgba(12, 18, 46, 0.98));
+  color: #f7f8ff;
+  display: flex;
+  align-items: center;
+  padding: 0 18px;
+  gap: 16px;
+  box-shadow: 0 2px 18px rgba(0, 0, 0, 0.85);
+  border-bottom: 1px solid rgba(148, 182, 255, 0.4);
+}
+
+.topbar-logo {
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.topbar-title {
+  font-size: 14px;
+  opacity: 0.9;
+}
+
+.topbar-home {
+  margin-left: auto;
+  padding: 6px 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(176, 205, 255, 0.7);
+  background: rgba(7, 11, 35, 0.9);
+  color: #e6ecff;
+  font-size: 13px;
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.topbar-home:hover {
+  background: rgba(19, 28, 72, 0.96);
+  box-shadow: 0 0 16px rgba(176, 205, 255, 0.9);
+  transform: translateY(-1px);
+}
+
+.topbar-home:active {
+  transform: translateY(1px);
+}
+
+/* основной лэйаут */
+.layout {
+  flex: 1;
+  display: flex;
+  min-height: 0;
+}
+
+/* боковая панель */
+.sidebar {
+  width: 220px;
+  background: linear-gradient(180deg, rgba(8, 10, 26, 0.96), rgba(5, 7, 19, 0.98));
+  border-right: 1px solid rgba(96, 119, 196, 0.8);
+  padding: 16px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.btn-compose {
+  width: 100%;
+  padding: 9px 12px;
+  border-radius: 999px;
+  border: none;
+  background: linear-gradient(135deg, #344583, #7d52d6);
+  color: #f5f7ff;
+  font-size: 14px;
+  font-weight: 600;
+  text-align: left;
+  padding-left: 16px;
+  box-shadow:
+    0 8px 22px rgba(0, 0, 0, 0.9),
+    0 0 26px rgba(125, 82, 214, 0.8);
+}
+
+.sidebar-section {
+  font-size: 13px;
+  color: #c4cffd;
+}
+
+.sidebar-label {
+  font-size: 12px;
+  text-transform: uppercase;
+  color: #8790d8;
+  letter-spacing: 0.08em;
+  margin-bottom: 8px;
+}
+
+.sidebar-section ul {
+  list-style: none;
+  margin-bottom: 10px;
+}
+
+.sidebar-section li {
+  padding: 4px 0;
+}
+
+.sidebar-section li.muted {
+  color: #747bb4;
+}
+
+.sidebar-note {
+  font-size: 12px;
+  color: #98a3e9;
+}
+
+/* центр */
+.center {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 22px;
+}
+
+/* блок нового письма */
+.compose {
+  width: 100%;
+  max-width: 780px;
+  background: radial-gradient(circle at top, rgba(20, 25, 60, 0.96), rgba(8, 10, 28, 0.98));
+  border-radius: 18px;
+  box-shadow:
+    0 20px 50px rgba(0, 0, 0, 0.95),
+    0 0 40px rgba(107, 124, 228, 0.6);
+  padding: 16px 18px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  border: 1px solid rgba(148, 182, 255, 0.55);
+  position: relative;
+  overflow: hidden;
+}
+
+.compose-header h1 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #f3f4ff;
+}
+
+/* поля */
+.compose-field {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+}
+
+.compose-field label {
+  width: 70px;
+  color: #a8b3ff;
+}
+
+.compose-to {
+  flex: 1;
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: radial-gradient(circle at top, #33417d, #212a5a);
+  color: #e8edff;
+  font-size: 13px;
+  border: 1px solid rgba(148, 182, 255, 0.9);
+}
+
+/* поля ввода */
+.compose-field input[type="text"] {
+  flex: 1;
+  border-radius: 6px;
+  border: 1px solid rgba(96, 119, 196, 0.9);
+  padding: 7px 9px;
+  font-size: 14px;
+  outline: none;
+  background: rgba(7, 10, 30, 0.96);
+  color: #e6ecff;
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease,
+    background 0.15s ease;
+}
+
+.compose-field input[type="text"]::placeholder {
+  color: #808ac4;
+}
+
+.compose-field input[type="text"]:focus {
+  border-color: #c0ceff;
+  box-shadow: 0 0 0 1px rgba(192, 206, 255, 0.85);
+  background: rgba(10, 15, 40, 0.98);
+}
+
+/* тело письма */
+.compose-body-wrapper {
+  margin-top: 6px;
+  border-radius: 10px;
+  border: 1px solid rgba(96, 119, 196, 0.9);
+  overflow: hidden;
+  background: radial-gradient(circle at top, #1a2145 0%, #070919 80%);
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.compose-body-wrapper:focus-within {
+  border-color: #ced7ff;
+  box-shadow: 0 0 0 1px rgba(206, 215, 255, 0.9);
+}
+
+#bodyInput {
+  width: 100%;
+  min-height: 260px;
+  border: none;
+  resize: vertical;
+  padding: 10px 12px;
+  font-size: 14px;
+  line-height: 1.6;
+  outline: none;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+  background: transparent;
+  color: #f1f3ff;
+}
+
+#bodyInput::placeholder {
+  color: #8b95cf;
+}
+
+/* footer */
+.compose-footer {
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* кнопка отправки */
+.btn-send {
+  padding: 8px 18px;
+  border-radius: 999px;
+  border: none;
+  background: linear-gradient(135deg, #7f5cff, #3f9bff);
+  color: white;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow:
+    0 8px 20px rgba(0, 0, 0, 0.95),
+    0 0 26px rgba(90, 145, 255, 0.95);
+  transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
+}
+
+.btn-send:disabled {
+  opacity: 0.6;
+  box-shadow: none;
+  cursor: default;
+}
+
+.btn-send:not(:disabled):hover {
+  transform: translateY(-1px);
+  box-shadow:
+    0 12px 28px rgba(0, 0, 0, 0.98),
+    0 0 30px rgba(90, 145, 255, 1);
+}
+
+.btn-send:not(:disabled):active {
+  transform: translateY(1px);
+  box-shadow:
+    0 5px 16px rgba(0, 0, 0, 0.9),
+    0 0 20px rgba(90, 145, 255, 0.9);
+}
+
+.status {
+  font-size: 12px;
+  color: #cbd5ff;
+}
+
+/* анимация «улёта» письма */
+.compose-body-wrapper.sending {
+  animation: bodyFly 1.2s ease-in forwards;
+}
+
+@keyframes bodyFly {
+  0% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+  60% {
+    transform: translateY(-40px) scale(0.98);
+    opacity: 0.9;
+  }
+  100% {
+    transform: translateY(-140px) scale(0.95);
+    opacity: 0;
+  }
+}
+
+/* адаптив */
+@media (max-width: 768px) {
+  .sidebar {
+    display: none;
+  }
+
+  .center {
+    padding: 12px;
+  }
+
+  .compose {
+    border-radius: 0;
+    max-width: 100%;
+    box-shadow: none;
+    border-left: none;
+    border-right: none;
+  }
+}
