@@ -1,4 +1,4 @@
-const TIMER_SECONDS = 24 * 60 * 60; // 24 часа
+const TIMER_SECONDS = 00 * 00 * 00; // 24 часа
 const STORAGE_KEY_END_TIME = "dailyCardEndTime";
 const STORAGE_KEY_CARD_KEY = "dailyCardKey";
 
@@ -668,3 +668,4 @@ dailyCardElement.addEventListener("click", () => {
     drawRandomCard();
     dailyCardElement.classList.add("flipped");
 });
+
